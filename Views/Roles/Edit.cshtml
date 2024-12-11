@@ -1,0 +1,134 @@
+﻿@model Ultima.Models.Role
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Editar Roles</h1>
+
+
+<hr />
+<div style="background-color: #23322D; color: #000; padding: 20px;">
+    <div class="container">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="IdRol" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Selección de rol -->
+            <div class="form-group mb-3">
+                <label asp-for="NomRol" class="control-label text-white">Seleccionar Rol</label>
+                <select asp-for="NomRol" class="form-control bg-light" style="background-color: #F5F0D7;" enable>
+                    <option>Administrador</option>
+                    <option>Recepcionista</option>
+                    @* <option>Cliente</option> *@
+                </select>
+                <span asp-validation-for="NomRol" class="text-danger"></span>
+            </div>
+
+
+            <!-- Estado -->
+            <div class="form-check form-switch mb-3">
+                @if (Model.Estado)
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Inactivo</span>
+                }
+            </div>
+
+            <!-- Permisos -->
+            <div class="form-group mb-3">
+                <label class="text-white">Permisos</label>
+                <div class="row">
+                    <!-- Primera columna -->
+                    <div class="col-4">
+                        <div class="card" style="background-color: #F5F0D7;">
+                            <div class="card-body">
+                                @for (int i = 0; i < ((List<SelectListItem>)ViewData["Permisos"]).Count; i += 3)
+                                {
+                                    var permiso = ((List<SelectListItem>)ViewData["Permisos"])[i];
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="permisosSeleccionados"
+                                               value="@permiso.Value" @(permiso.Selected ? "checked" : "") />
+                                        <label class="form-check-label">@permiso.Text</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Segunda columna -->
+                    <div class="col-4">
+                        <div class="card" style="background-color: #F5F0D7;">
+                            <div class="card-body">
+                                @for (int i = 1; i < ((List<SelectListItem>)ViewData["Permisos"]).Count; i += 3)
+                                {
+                                    var permiso = ((List<SelectListItem>)ViewData["Permisos"])[i];
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="permisosSeleccionados"
+                                               value="@permiso.Value" @(permiso.Selected ? "checked" : "") />
+                                        <label class="form-check-label">@permiso.Text</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tercera columna -->
+                    <div class="col-4">
+                        <div class="card" style="background-color: #F5F0D7;">
+                            <div class="card-body">
+                                @for (int i = 2; i < ((List<SelectListItem>)ViewData["Permisos"]).Count; i += 3)
+                                {
+                                    var permiso = ((List<SelectListItem>)ViewData["Permisos"])[i];
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="permisosSeleccionados"
+                                               value="@permiso.Value" @(permiso.Selected ? "checked" : "") />
+                                        <label class="form-check-label">@permiso.Text</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-4">
+                <input type="submit" value="Actualizar" class="btn btn-success me-2" />
+                <a asp-action="Index" class="btn btn-secondary">Salir</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#flexSwitchCheckChecked').change(function () {
+                var estado = $(this).is(':checked');
+                var id = @Model.IdRol;
+
+                $.ajax({
+                    url: '@Url.Action("UpdateEstado")',
+                    type: 'POST',
+                    data: { id: id, estado: estado },
+                    success: function () {
+                        console.log('Estado actualizado exitosamente');
+                    },
+                    error: function () {
+                        console.error('Error al actualizar el estado');
+                    }
+                });
+            });
+        });
+    </script>
+}

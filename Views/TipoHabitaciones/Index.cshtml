@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Ultima.Models.TipoHabitacione>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Tipo Habitación</h1>
+
+<p>
+    <a class="btn btn-success" style="margin-left: 88%;" asp-action="Create">Crear Tipo Habitacion</a>
+</p>
+<table id="TipoHabitacion" class="table custom-table table-striped">
+    
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomTipoHabitacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroPersonas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomTipoHabitacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumeroPersonas)
+                </td>
+                <td style="padding: 10px; text-align: center;">
+                    <span id="estado-texto-@item.IdTipoHabitacion" style="color: @(item.Estado ? "green" : "black"); font-weight: bold;">
+                        @(item.Estado ? "Activo" : "Inactivo")
+                    </span>
+                    <div class="form-check form-switch d-inline-flex justify-content-center" style="margin-left: 10px;">
+                        <input class="form-check-input" type="checkbox" id="estado_@item.IdTipoHabitacion"
+                        @(item.Estado ? "checked" : "")
+                               onchange="updateEstado(@item.IdTipoHabitacion, this.checked)">
+                        <label class="form-check-label" for="estado_@item.IdTipoHabitacion"></label>
+                    </div>
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.IdTipoHabitacion">Editar</a>
+                    <a asp-action="Details" class="btn btn-info btn-sm" asp-route-id="@item.IdTipoHabitacion">Detalles</a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                       data-bs-toggle="modal" data-bs-target="#deleteModal"
+                       data-id="@item.IdTipoHabitacion">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar esta habitación? Esta acción no se puede deshacer.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="post" asp-action="DeleteConfirmed" asp-controller="Habitaciones">
+                    <input type="hidden" id="deleteId" name="id" value="" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+             $(document).ready(function () {
+            // Inicializar DataTables
+            $('#TipoHabitacion').DataTable({
+                language: {
+                    search: "Buscar:", // Personalizar etiqueta del buscador
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrado de _MAX_ registros totales)",
+                    paginate: {
+                        first: "Primera",
+                        last: "Última",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                },
+                paging: true,    // Habilitar paginación
+                ordering: true,  // Permitir ordenamiento de columnas
+                searching: true, // Habilitar búsqueda
+                lengthChange: true // Cambiar número de registros por página
+            });
+
+            // Manejar el cambio de estado en los switches
+            $('.status-toggle').change(function () {
+                const estado = $(this).is(':checked') ? true : false;
+                const idHabitacion = $(this).data('id');
+
+                // Llamada AJAX para actualizar el estado
+                $.ajax({
+                    url: '/Habitaciones/ActualizarEstado',
+                    type: 'POST',
+                    data: { id: idHabitacion, estado: estado },
+                    success: function (response) {
+                        console.log('Estado actualizado con éxito:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar el estado:', error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function updateEstado(id, estado) {
+            $.ajax({
+                url: '@Url.Action("UpdateEstado", "TipoHabitaciones")',
+                type: 'POST',
+                data: { id: id, estado: estado },
+                success: function (response) {
+                    if (response.success) {
+                        var estadoTexto = estado ? "Activo" : "Inactivo";
+                        var estadoColor = estado ? "green" : "red";
+
+                        // Cambiar el texto y color del estado en la tabla
+                        $("#estado-texto-" + id).text(estadoTexto).css("color", estadoColor);
+
+                        // Cambiar el estado en el switch de la vista de edición si está presente
+                        var editSwitch = document.getElementById("flexSwitchCheckChecked");
+                        if (editSwitch) {
+                            editSwitch.checked = estado;
+                        }
+
+                        console.log('Estado actualizado exitosamente');
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function () {
+                    console.error('Error al actualizar el estado');
+                }
+            });
+        }
+                var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Botón que abrió el modal
+            var IdHabitacion = button.getAttribute('data-id'); // ID de la habitación
+            var deleteInput = deleteModal.querySelector('#deleteId'); // Campo oculto en el formulario
+            deleteInput.value = IdHabitacion;
+        });
+    </script>
+
+}
+<link href="~/css/TablaStyle.css" rel="stylesheet" />

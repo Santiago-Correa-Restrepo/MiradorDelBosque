@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseña</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="center-container">
+        <div class="form-container">
+            <div class="card">
+                <div class="card-header" style="background-color: #23322D; color: white">
+                    Restablecer Contraseña
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Inicio" asp-action="RestablecerContrasena" method="post">
+                        <!-- Campo oculto para enviar el correo -->
+                        <input type="hidden" name="correo" value="@TempData["correo"]" />
+
+                        <!-- Campo para ingresar la nueva contraseña -->
+                        <input class="form-control mb-3" type="password" placeholder="Nueva contraseña" required name="nuevaContrasena" />
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button class="btn btn-success" type="submit">
+                                Restablecer Contraseña
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<link href="~/css/site.css" rel="stylesheet" />

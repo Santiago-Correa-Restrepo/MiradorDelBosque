@@ -1,0 +1,22 @@
+﻿body {
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.col-3 {
+    flex: 1;
+    padding: 9px;
+}
+
+.card {
+    border: 4px solid #49813b; /* Color del borde */
+    border-radius: 9px; /* Bordes redondeados */
+    margin: 3px 0px; /* Espacio vertical entre filas */
+}
+
+.card-body {
+    padding: 5px; /* Espacio dentro del cuadro */
+}

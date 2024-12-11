@@ -1,0 +1,50 @@
+﻿@model Ultima.Models.Role
+
+@{
+    ViewData["Title"] = "Detalles del Rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Detalles</h1>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>@Model.NomRol</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3"><strong>Estado</strong></dt>
+            <dd class="col-sm-9">
+                @if (Model.Estado)
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Inactivo</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3"><strong>Permisos Asignados</strong></dt>
+            <dd class="col-sm-9">
+                @if (Model.PermisosRoles != null && Model.PermisosRoles.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var permiso in Model.PermisosRoles.Select(pr => pr.IdPermisoNavigation.NomPermiso))
+                        {
+                            <li class="list-group-item">@permiso</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No hay permisos asignados a este rol.</p>
+                }
+            </dd>
+        </dl>
+    </div>
+    <div class="card-footer text-end">
+        @*  <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model?.IdRol">Editar</a> *@
+        <a class="btn btn-secondary" asp-action="Index">Salir</a>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+﻿@model Ultima.Models.Servicio
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center">Detalles Servicio</h1>
+
+<div>
+    <hr />
+    <dl class="form-container">
+        <div class="text-center">
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NomServicio)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.NomServicio)
+                </dd>
+            </div>
+            <hr>
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+            </div>
+            <hr>
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.oTipoServicio)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.oTipoServicio.NombreTipoServicio)
+                </dd>
+            </div>
+            <hr>
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Costo)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Costo)
+                </dd>
+            </div>
+            <hr>
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Estado)
+                </dt>
+                <dd class="col-sm-10">
+                    <td style="padding: 10px; text-align: center;">
+                        <span style="color: @(Model.Estado ? "green" : "black"); font-weight: bold;">
+                            @(Model.Estado ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                </dd>
+            </div>
+            <hr>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">Salir</a>
+        </div>
+    </dl>
+</div>
+
+   
+
+
+<script>
+    function updateEstado(id, estado) {
+        $.ajax({
+            url: '@Url.Action("UpdateEstado")',
+            type: 'POST',
+            data: { id: id, estado: estado },
+            success: function () {
+                // Actualiza el texto de estado dinámicamente sin recargar la página
+                var estadoTexto = estado ? "Activo" : "Inactivo";
+                var estadoColor = estado ? "green" : "black";
+
+                // Cambiar el texto y el color
+                $("#estado-texto-" + id).text(estadoTexto).css("color", estadoColor);
+
+                console.log('Estado actualizado exitosamente');
+            },
+            error: function () {
+                console.error('Error al actualizar el estado');
+            }
+        });
+    }
+</script>
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

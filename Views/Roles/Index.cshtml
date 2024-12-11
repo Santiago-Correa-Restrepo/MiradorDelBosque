@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Ultima.Models.Role>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/tablastyle.css" rel="stylesheet" />
+<h1 class="text-dark text text-center">Roles</h1>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+@* <p>
+    <a class="btn btn-success" asp-action="Create">Asignar rol</a>
+</p> *@
+<table id="roles" class="table custom-table table-striped">
+    <thead>
+        <tr>
+            @* <th style="padding: 10px; font-weight: bold; text-align: left;">
+                @Html.DisplayNameFor(model => model.IdRol) <!-- "ID de Rol" gracias a [Display(Name = "ID de Rol")] -->
+            </th> *@
+            <th >
+                @Html.DisplayNameFor(model => model.NomRol) <!-- "Nombre del Rol" -->
+            </th>
+            <th >
+                @Html.DisplayNameFor(model => model.Estado) <!-- "Estado" -->
+            </th>
+            <th >
+                Operaciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr >
+                @*  <td style="padding: 10px; text-align: left;">
+                    @Html.DisplayFor(modelItem => item.IdRol) <!-- Muestra el ID del Rol -->
+                </td> *@
+                <td >
+                    @Html.DisplayFor(modelItem => item.NomRol) <!-- Muestra el Nombre del Rol -->
+                </td>
+                <td >
+                    <span id="estado-texto-@item.IdRol" style="color: @(item.Estado ? "green" : "black"); font-weight: bold;">
+                        @(item.Estado ? "Activo" : "Inactivo") <!-- Estado visual -->
+                    </span>
+                    <div class="form-check form-switch d-inline-flex justify-content-center" style="margin-left: 10px; ">
+                        <input class="form-check-input" type="checkbox" id="estado_@item.IdRol"
+                        @(item.Estado ? "checked" : "")
+                               onchange="updateEstado(@item.IdRol, this.checked)">
+                        <label class="form-check-label" for="estado_@item.IdRol"></label>
+                    </div>
+                </td>
+                <td >
+                    @*  <a asp-action="Edit" asp-route-id="@item.IdRol" data-toggle="tooltip" data-placement="bottom" title="Asignar permisos" class="btn btn-outline-dark">
+                        ✏
+                    </a>  *@
+                    <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-info btn-sm">
+                        Detalles
+                    </a>
+                   @*  <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-danger btn-sm">
+                        Eliminar
+                    </a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+<script>
+    function updateEstado(id, estado)
+    {
+        $.ajax({
+            url: '@Url.Action("UpdateEstado")',
+            type: 'POST',
+            data: { id: id, estado: estado },
+            success: function () {
+                // Actualiza el texto de estado dinámicamente sin recargar la página
+                var estadoTexto = estado ? "Activo" : "Inactivo";
+                    var estadoColor = estado ? "green" : "black";
+
+                // Cambiar el texto y el color
+                $("#estado-texto-" + id).text(estadoTexto).css("color", estadoColor);
+
+                console.log('Estado actualizado exitosamente');
+            },
+            error: function () {
+                console.error('Error al actualizar el estado');
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+           // Inicializar DataTables
+           $('#roles').DataTable({
+               language: {
+                   search: "Buscar:", // Personalizar etiqueta del buscador
+                   lengthMenu: "Mostrar _MENU_ registros",
+                   zeroRecords: "No se encontraron resultados",
+                   info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                   infoEmpty: "No hay registros disponibles",
+                   infoFiltered: "(filtrado de _MAX_ registros totales)",
+                   paginate: {
+                       first: "Primera",
+                       last: "Última",
+                       next: "Siguiente",
+                       previous: "Anterior"
+                   }
+               },
+               paging: true,    // Habilitar paginación
+               ordering: true,  // Permitir ordenamiento de columnas
+               searching: true, // Habilitar búsqueda
+               lengthChange: true // Cambiar número de registros por página
+           });
+
+           // Manejar el cambio de estado en los switches
+           $('.status-toggle').change(function () {
+               const estado = $(this).is(':checked') ? true : false;
+               const idHabitacion = $(this).data('id');
+
+               // Llamada AJAX para actualizar el estado
+               $.ajax({
+                   url: '/Habitaciones/ActualizarEstado',
+                   type: 'POST',
+                   data: { id: idHabitacion, estado: estado },
+                   success: function (response) {
+                       console.log('Estado actualizado con éxito:', response);
+                   },
+                   error: function (xhr, status, error) {
+                       console.error('Error al actualizar el estado:', error);
+                   }
+               });
+           });
+       });
+</script>
+
+}

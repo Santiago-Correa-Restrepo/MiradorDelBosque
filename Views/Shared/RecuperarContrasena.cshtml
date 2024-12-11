@@ -1,0 +1,55 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar Contraseña</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <style>
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="center-container">
+        <div class="form-container">
+            <h2 class="text-center">Recuperar Contraseña</h2>
+            <p>Introduce tu correo electrónico para recibir un enlace de recuperación de contraseña.</p>
+
+            <form asp-action="RecuperarContrasena" method="post">
+                <div class="form-group mb-3">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" name="correo" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-success w-100">Enviar enlace de recuperación</button>
+            </form>
+
+            @if (ViewData["mensaje"] != null)
+            {
+                <div class="alert alert-danger mt-3" role="alert">
+                    @ViewData["mensaje"]
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>
+
+<link href="~/css/site.css" rel="stylesheet" />

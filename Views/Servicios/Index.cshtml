@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Ultima.Models.Servicio>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Servicios</h1>
+<!-- Mostrar el mensaje de error si existe -->
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<p>
+    <a class="btn btn-success" style="margin-left: 90%;" asp-action="Create">Crear Servicio</a>
+</p>
+<table id="servicio" class="table custom-table table-striped">
+    
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomServicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.oTipoServicio.NombreTipoServicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Costo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomServicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.oTipoServicio.NombreTipoServicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Costo)
+                </td>
+                <td style="padding: 10px; text-align: center;">
+                    <span id="estado-texto-@item.IdServicio" style="color: @(item.Estado ? "green" : "black"); font-weight: bold;">
+                        @(item.Estado ? "Activo" : "Inactivo")
+                    </span>
+                    <div class="form-check form-switch d-inline-flex justify-content-center" style="margin-left: 10px;">
+                        <input class="form-check-input" type="checkbox" id="estado_@item.IdServicio"
+                        @(item.Estado ? "checked" : "")
+                               onchange="updateEstado(@item.IdServicio, this.checked)">
+                        <label class="form-check-label" for="estado_@item.IdServicio"></label>
+                    </div>
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.IdServicio">Editar</a>
+                    <a asp-action="Details" class="btn btn-info btn-sm" asp-route-id="@item.IdServicio">Detalles</a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                       data-bs-toggle="modal" data-bs-target="#deleteServiceModal"
+                       data-id="@item.IdServicio"
+                       data-tipo="@item.oTipoServicio.NombreTipoServicio">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<!-- Modal de confirmación de eliminación para Servicios -->
+<div class="modal fade" id="deleteServiceModal" tabindex="-1" aria-labelledby="deleteServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteServiceModalLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="serviceMessage"></p>
+                <p>¿Estás seguro de que deseas eliminar este servicio? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteServiceForm" method="post" asp-action="DeleteConfirmed" asp-controller="Servicios">
+                    <input type="hidden" id="deleteServiceId" name="id" value="" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+        @section Scripts {
+            <script>
+                let table = new DataTable('#servicio');
+            </script>
+        }
+       
+
+        <script>
+        function updateEstado(id, estado) {
+        $.ajax({
+            url: '@Url.Action("UpdateEstado", "Servicios")',
+            type: 'POST',
+            data: { id: id, estado: estado },
+            success: function () {
+                var estadoTexto = estado ? "Activo" : "Inactivo";
+                var estadoColor = estado ? "green" : "black";
+
+                // Actualizar texto y color del estado
+                $("#estado-texto-" + id).text(estadoTexto).css("color", estadoColor);
+                console.log('Estado actualizado correctamente');
+            },
+            error: function () {
+                console.error('Error al actualizar el estado');
+            }
+        });
+    }
+        </script>
+<script>
+    var deleteServiceModal = document.getElementById('deleteServiceModal');
+    deleteServiceModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var idServicio = button.getAttribute('data-id');
+        var tipoServicio = button.getAttribute('data-tipo');
+
+        // Asigna los valores al modal
+        var deleteInput = deleteServiceModal.querySelector('#deleteServiceId');
+        deleteInput.value = idServicio;
+
+        // Muestra el nombre del tipo de servicio en el mensaje
+        var serviceMessage = deleteServiceModal.querySelector('#serviceMessage');
+        serviceMessage.textContent = `Servicio del tipo: ${tipoServicio}`;
+    });
+</script>
+<link href="~/css/TablaStyle.css" rel="stylesheet" />
+    

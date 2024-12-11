@@ -1,0 +1,109 @@
+﻿@model List<Abono>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table id="HabitacionesTable" class="table">
+        
+        <thead style="background-color: #23322D; color: white;">
+            
+            <tr>
+                <th>Id</th>
+                <th>Fecha Abono</th>
+                <th>Sub Total</th>
+                <th>IVA</th>
+                <th>Total</th>
+                <th>Porcentaje</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var abono in Model)
+            {
+                <tr>
+                    <td>@abono.IdAbono</td>
+                    <td>@abono.FechaAbono</td>
+                    <td>@abono.SubTotal</td>
+                    <td>@abono.Iva</td>
+                    <td>@abono.CantAbono</td>
+                    <td>@abono.Porcentaje</td>
+                    <td>
+
+                        @if (abono.Estado == true)
+                        {
+                            <p>Habilitado</p>
+                        }
+                        else
+                        {
+                            <p>Anulado</p>
+                        }
+
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-action="Detalles" asp-controller="Abono" asp-route-idAbono="@abono.IdAbono" asp-route-reservaId="@abono.IdReserva">Detalles</a>
+
+                        @if (abono.Estado == true && (ViewData["anulado"] != "true" && ViewData["finalizada"] != "true"))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="anularAbonoModal(@abono.IdAbono)">Anular</a>
+                            
+
+                        }
+                        else
+                        {
+                            <a class="btn btn-secondary btn-sm">Anular</a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No se encontraron resultados.</p>
+}
+<script>
+    $(document).ready(function () {
+        // Inicializar DataTables
+        $('#HabitacionesTable').DataTable({
+            language: {
+                search: "Buscar:", // Personalizar etiqueta del buscador
+                lengthMenu: "Mostrar _MENU_ registros",
+                zeroRecords: "No se encontraron resultados",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty: "No hay registros disponibles",
+                infoFiltered: "(filtrado de _MAX_ registros totales)",
+                paginate: {
+                    first: "Primera",
+                    last: "Última",
+                    next: "Siguiente",
+                    previous: "Anterior"
+                }
+            },
+            paging: true,    // Habilitar paginación
+            ordering: true,  // Permitir ordenamiento de columnas
+            searching: true, // Habilitar búsqueda
+            lengthChange: true // Cambiar número de registros por página
+        });
+
+        // Manejar el cambio de estado en los switches
+        $('.status-toggle').change(function () {
+            const estado = $(this).is(':checked') ? true : false;
+            const idHabitacion = $(this).data('id');
+
+            // Llamada AJAX para actualizar el estado
+            $.ajax({
+                url: '/Habitaciones/ActualizarEstado',
+                type: 'POST',
+                data: { id: idHabitacion, estado: estado },
+                success: function (response) {
+                    console.log('Estado actualizado con éxito:', response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar el estado:', error);
+                }
+            });
+        });
+    });
+</script>

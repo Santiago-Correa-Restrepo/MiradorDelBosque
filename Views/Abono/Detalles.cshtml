@@ -1,0 +1,179 @@
+﻿@model Ultima.Models.Abono
+
+@{
+    ViewData["Title"] = "Detalles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+   @*  <link href="~/css/abonocreatestyle.css" rel="stylesheet" />
+    <link href="~/css/carruselstyle.css" rel="stylesheet" /> *@
+    <link href="~/css/CrearStyle.css" rel="stylesheet" />
+</head>
+
+<div class="container-create">
+
+    <h1 class="text text-center">Detalles del Abono</h1>
+
+    <div class="form-container">
+
+        <form id="abonoForm">
+
+            <div class="row align-items-center">
+                <!-- Valor Deuda -->
+                <div class="col-md-6 d-flex align-items-center mb-2">
+                    <label for="inputDeuda" class="form-label me-2" style="min-width: 120px;">Valor Deuda</label>
+                    <input type="text" id="inputDeuda" class="form-control form-control-sm" value="" asp-for="ValorDeuda" readonly />
+                </div>
+
+                <!-- Pendiente -->
+                <div class="col-md-6 d-flex align-items-center mb-2">
+                    <label for="inputPendiente" class="form-label me-2" style="min-width: 120px;">Pendiente</label>
+                    <input type="text" id="inputPendiente" class="form-control form-control-sm" value="" asp-for="Pendiente" readonly />
+                </div>
+            </div>
+
+            <div class="info-reserva mb-4 borde p-4">
+                <!-- Información de Paquete -->
+                <div class="info-paquete mb-4">
+                    <h5 class="mb-3">Paquetes</h5>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nombre del Paquete</th>
+                                <th>Costo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.PaqueteReserva.oPaquete.NomPaquete</td>
+                                <td>
+                                    <span>@String.Format("{0:C0}", ViewBag.PaqueteReserva.oPaquete.Costo)</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Información de Servicios Adicionales -->
+                <div class="info-servicios">
+                    <h5 class="mb-3">Servicios Adicionales</h5>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nombre del Servicio</th>
+                                <th>Tipo de Servicio</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-center">Costo Individual</th>
+                                <th class="text-center">Costo Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalleServicio in (List<DetalleReservaServicio>)ViewBag.ServiciosReserva)
+                            {
+                                var costoTotal = detalleServicio.Cantidad * detalleServicio.Costo;
+                                <tr>
+                                    <td>@detalleServicio.oServicio.NomServicio</td>
+                                    <td>@detalleServicio.oServicio.oTipoServicio.NombreTipoServicio</td>
+                                    <td class="text-center">@detalleServicio.Cantidad</td>
+                                    <td class="text-center">@String.Format("{0:C0}", detalleServicio.oServicio.Costo)</td>
+                                    <td class="text-center">@String.Format("{0:C0}", costoTotal)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="abono-form borde p-4 d-md-flex">
+                <!-- Formulario de Abono -->
+                <div class="me-md-4 flex-grow-1">
+                    <!-- Fecha Abono -->
+                    <div class="item-abono-form d-flex align-items-center mb-4">
+                        <label for="inputFechaAbono" class="form-label me-3" style="min-width: 120px;">Fecha Abono</label>
+                        <input type="text" id="inputFechaAbono" class="form-control form-control-sm" asp-for="FechaAbono" readonly />
+                    </div>
+
+                    <!-- Sub Total -->
+                    <div class="item-abono-form d-flex align-items-center mb-4">
+                        <label for="inputSubTotal" class="form-label me-3" style="min-width: 120px;">Sub Total</label>
+                        <input type="text" id="inputSubTotal" class="form-control form-control-sm" asp-for="SubTotal" readonly />
+                    </div>
+
+                    <!-- Iva -->
+                    <div class="item-abono-form d-flex align-items-center mb-4">
+                        <label for="inputIva" class="form-label me-3" style="min-width: 120px;">Iva</label>
+                        <input type="text" id="inputIva" class="form-control form-control-sm" asp-for="Iva" readonly />
+                    </div>
+
+                    <!-- Total Abonado y Porcentaje Abonado -->
+                    <div class="d-flex flex-wrap">
+                        <!-- Total Abonado -->
+                        <div class="abonado d-flex align-items-center mb-4 me-4">
+                            <label for="inputTotalAbonado" class="form-label me-3" style="min-width: 120px;">Total Abonado</label>
+                            <input type="text" id="inputTotalAbonado" class="form-control form-control-sm" asp-for="CantAbono" readonly />
+                        </div>
+
+                        <!-- Porcentaje Abonado -->
+                        <div class="porcentaje-container d-flex align-items-center mb-4">
+                            <label for="inputPorcentaje" class="form-label me-3" style="min-width: 150px;">Porcentaje Abonado</label>
+                            <div class="input-group">
+                                <input type="text" id="inputPorcentaje" class="form-control form-control-sm" asp-for="Porcentaje" readonly />
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor de Imágenes -->
+                <div class="container-slide flex-shrink-0 mt-4 mt-md-0">
+                    <div id="imagenesSlider">
+                        @{
+                            bool primeraImagen = true;
+                        }
+                        @foreach (var url in ViewBag.ImagenesAsociadas)
+                        {
+                            <input type="radio" name="s" style="background-image: url('@url');" @(primeraImagen ? "checked" : "")>
+                            primeraImagen = false;
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </form>
+
+        <hr>
+        <div class="mb-2 buttons">
+
+
+            <a class="btn btn-dark" asp-action="Index" asp-controller="Abono" asp-route-reservaId="@ViewBag.reservaId">Salir</a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="~/js/metodosscript.js"></script>
+<script src="~/js/AbonoScript.js"></script>
+
+<script>
+
+    var deudaFormatoMoneda = formatearMoneda(@ViewData["total"]);
+    var pendienteFormatoMoneda = formatearMoneda(@ViewData["pendiente"]);
+    var subTotal = formatearMoneda(parseFloat($('#inputSubTotal').val()));
+    var iva = formatearMoneda(parseFloat($('#inputIva').val()));
+    var totalAbonado = formatearMoneda(parseFloat($('#inputTotalAbonado').val()));
+
+    $('#inputDeuda').val(deudaFormatoMoneda);
+    $('#inputPendiente').val(pendienteFormatoMoneda);
+    $('#inputSubTotal').val(subTotal);
+    $('#inputIva').val(iva);
+    $('#inputTotalAbonado').val(totalAbonado);
+
+</script>

@@ -1,0 +1,25 @@
+﻿body {
+}
+/* Quitar los botones de incremento/decremento en los campos de tipo number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Para Firefox */
+}
+
+.form-container {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto; /* Esto centra el contenedor en la página */
+}

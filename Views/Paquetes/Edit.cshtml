@@ -1,0 +1,118 @@
+﻿@model Ultima.Models.Paquete
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Editar Paquete</h1>
+
+
+
+<div class="form-container">
+    <div class="row">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdPaquete" />
+            <div class="form-group">
+                <label asp-for="NomPaquete" class="control-label"></label>
+                <input asp-for="NomPaquete" class="form-control" />
+                <span asp-validation-for="NomPaquete" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="oHabitacion.Nombre" class="control-label"></label>
+                <select asp-for="IdHabitacion" class="form-control" asp-items="ViewBag.IdHabitacion"></select>
+                <span asp-validation-for="IdHabitacion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Seleccione los Servicios</label>
+                @foreach (var servicio in ViewData["Servicios"] as IEnumerable<dynamic>)
+                {
+                    <div>
+                        <input type="checkbox"
+                               name="ServiciosSeleccionados"
+                               value="@servicio.IdServicio"
+                               class="servicioCheckbox"
+                               data-Costo="@servicio.Costo"
+                               id="servicio_@servicio.IdServicio"
+                        @(servicio.Seleccionado ? "checked" : "") />
+                        <label for="servicio_@servicio.IdServicio">@servicio.NomServicio (Costo: $@servicio.Costo)</label>
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Costo" class="control-label"></label>
+                <input asp-for="Costo" class="form-control" id="precioTotal" />
+                <span asp-validation-for="Costo" class="text-danger"></span>
+            </div>
+            <hr>
+            <label>Estado</label>
+            <div class="form-check form-switch mb-3">
+                <label asp-for="Estado" class="form-label text-white mb-2"></label>
+                @Html.CheckBoxFor(model => model.Estado, new { @class = "form-check-input", @id = "flexSwitchCheckChecked" })
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Actualizar" class="btn btn-success" /> |
+                <a asp-action="Index" class="btn btn-secondary">Salir</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+   
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleccionar los checkboxes de servicios y el campo de precio total
+        const servicioCheckboxes = document.querySelectorAll(".servicioCheckbox");
+        const precioTotalInput = document.getElementById("precioTotal");
+
+        // Función para actualizar el precio total
+        function actualizarPrecioTotal() {
+            let total = 0;
+            servicioCheckboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    total += parseFloat(checkbox.dataset.costo) || 0;
+                }
+            });
+            // Mostrar el total como número entero sin puntos ni ceros adicionales
+            precioTotalInput.value = Math.round(total).toString();
+        }
+
+        // Asignar evento de cambio a cada checkbox
+        servicioCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", actualizarPrecioTotal);
+        });
+
+        // Inicializar el precio total con los valores seleccionados al cargar la página
+        function inicializarPrecioTotal() {
+            let totalInicial = 0;
+            servicioCheckboxes.forEach((checkbox) => {
+                if (checkbox.checked) { // Comprobar si el servicio ya está seleccionado
+                    totalInicial += parseFloat(checkbox.dataset.costo) || 0;
+                }
+            });
+            // Establecer el precio inicial en el campo de precio total
+            precioTotalInput.value = Math.round(totalInicial).toString();
+        }
+
+        // Ejecutar la inicialización al cargar la página
+        inicializarPrecioTotal();
+    });
+</script>
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

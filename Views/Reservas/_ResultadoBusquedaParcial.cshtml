@@ -1,0 +1,120 @@
+﻿﻿@using Microsoft.AspNetCore.Identity
+@model List<Reserva>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table id="reserva" class="table custom-table table-striped">
+        
+        <thead>
+            <tr>
+                <th>Documento</th>
+                <th>Nombre </th>
+                <th>Fecha Reserva</th>
+                <th>Total</th>
+                @* @if (User.HasClaim("Permiso", "Cambiar Estado Reservas")) *@
+                
+                    <th>Estado</th>
+                
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reserva in Model)
+            {
+                <tr>
+                    <td>@reserva.NroDocumentoCliente</td>
+                    <td>@reserva.oCliente.Nombres</td>
+                    <td>@reserva.FechaReserva?.ToString("dd/MM/yyyy")</td>
+                    <td>@String.Format("{0:C0}", reserva.MontoTotal)</td>
+
+                    @* @if (User.HasClaim("Permiso", "Cambiar Estado Reservas")) *@
+                    
+                        <td>@reserva.oEstadoReserva.NombreEstadoReserva</td>
+                    
+                    <td>
+                        @if (reserva.IdEstadoReserva == 5 || reserva.IdEstadoReserva == 6)
+                        {
+                            @* @if (User.HasClaim("Permiso", "Crear Abono")) *@
+                            
+                                <a class="btn btn-secondary btn-sm" asp-action="Index" asp-controller="Abono" asp-route-reservaId="@reserva.IdReserva">Abonos</a>
+
+                            <a class="btn btn-secondary btn-sm" disabled>Detalles</a>
+                            <a class="btn btn-secondary btn-sm" disabled>Editar</a>
+                            <a class="btn btn-secondary btn-sm" disabled>Anular</a>
+
+                        }
+                        else
+                        {
+                            @* @if (User.HasClaim("Permiso", "Crear Abono")) *@
+                            
+                                <a class="btn btn-success btn-sm" asp-action="Index" asp-controller="Abono" asp-route-reservaId="@reserva.IdReserva">Abonos</a>
+
+                            <a class="btn btn-warning btn-sm" asp-action="Editar" asp-controller="Reservas" asp-route-reservaId="@reserva.IdReserva">Editar</a>
+                            <a class="btn btn-primary btn-sm" asp-action="Detalles" asp-controller="Reservas" asp-route-reservaId="@reserva.IdReserva">Detalles</a>
+                           
+                            @if (reserva.IdEstadoReserva == 1 || reserva.IdEstadoReserva == 2)
+                            {
+                                <a class="btn btn-danger btn-sm" onclick="cambiarEstadoModal(@reserva.IdReserva)">Anular</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-secondary btn-sm" disabled>Anular</a>
+                            }
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No se encontraron resultados.</p>
+}
+
+<script>
+    $(document).ready(function () {
+        // Inicializar DataTables
+        $('#reserva').DataTable({
+            language: {
+                search: "Buscar:", // Personalizar etiqueta del buscador
+                lengthMenu: "Mostrar _MENU_ registros",
+                zeroRecords: "No se encontraron resultados",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty: "No hay registros disponibles",
+                infoFiltered: "(filtrado de _MAX_ registros totales)",
+                paginate: {
+                    first: "Primera",
+                    last: "Última",
+                    next: "Siguiente",
+                    previous: "Anterior"
+                }
+            },
+            paging: true,    // Habilitar paginación
+            ordering: true,  // Permitir ordenamiento de columnas
+            searching: true, // Habilitar búsqueda
+            lengthChange: true // Cambiar número de registros por página
+        });
+
+        // Manejar el cambio de estado en los switches
+        $('.status-toggle').change(function () {
+            const estado = $(this).is(':checked') ? true : false;
+            const idHabitacion = $(this).data('id');
+
+            // Llamada AJAX para actualizar el estado
+            $.ajax({
+                url: '/Habitaciones/ActualizarEstado',
+                type: 'POST',
+                data: { id: idHabitacion, estado: estado },
+                success: function (response) {
+                    console.log('Estado actualizado con éxito:', response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar el estado:', error);
+                }
+            });
+        });
+    });
+</script>
+<link href="~/css/TablaStyle.css" rel="stylesheet" />

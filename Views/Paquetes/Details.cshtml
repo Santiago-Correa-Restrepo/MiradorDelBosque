@@ -1,0 +1,110 @@
+﻿@model Ultima.Models.Paquete
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Detalles Paquete</h1>
+
+<div class="paquete-container">
+    <div class="paquete-header">
+        
+        <hr />
+    </div>
+    <dl class="form-container">
+        <dt class="row">
+            @Html.DisplayNameFor(model => model.NomPaquete)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NomPaquete)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.oHabitacion.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.oHabitacion.Nombre)
+        </dd>
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre del Servicio</th>
+                        <th>Costo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var servicio in Model.PaqueteServicios)
+                    {
+                        <tr>
+                            <td>@servicio.oServicio.NomServicio</td>
+                            <td>@servicio.oServicio.Costo</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Costo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Costo)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class="col-sm-10">
+            <td style="padding: 10px; text-align: center;">
+                <span style="color: @(Model.Estado ? "green" : "red"); font-weight: bold;">
+                    @(Model.Estado ? "Activo" : "Inactivo")
+                </span>
+            </td>
+
+        </dd>
+        <div>
+
+            <a asp-action="Index" class="btn btn-secondary">Salir</a>
+        </div>
+    </dl>
+    <hr>
+   
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleccionar los checkboxes de servicios y el campo de precio total
+        const servicioCheckboxes = document.querySelectorAll(".servicioCheckbox");
+        const precioTotalInput = document.getElementById("precioTotal");
+
+        // Función para actualizar el precio total
+        function actualizarPrecioTotal() {
+            let total = 0;
+            servicioCheckboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    total += parseFloat(checkbox.dataset.precio) || 0;
+                }
+            });
+            // Mostrar el total como número entero sin puntos ni ceros adicionales
+            precioTotalInput.value = Math.round(total).toString();
+        }
+
+        // Asignar evento de cambio a cada checkbox
+        servicioCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", actualizarPrecioTotal);
+        });
+
+        // Inicializar el precio total si hay servicios seleccionados al cargar la página
+        actualizarPrecioTotal();
+    });
+</script>
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

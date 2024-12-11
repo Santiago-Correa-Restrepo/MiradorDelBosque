@@ -1,0 +1,92 @@
+﻿@model Ultima.Models.Usuario
+<link href="~/css/Usuarios.css" rel="stylesheet" />
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Crear Usuario</h1>
+
+
+<hr />
+<div class="form-container">
+    <div class="row">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-white"></div>
+            <div class="form-group">
+                <label asp-for="NroDocumento" class="control-label text-dark"></label>
+                <input asp-for="NroDocumento" class="form-control" type="number" maxlength="10"
+                       pattern="\d{10}" title="Debe contener exactamente entre 8-10 dígitos" required />
+                <span asp-validation-for="NroDocumento" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="IdTipoDocumento" class="control-label">Tipo Documento</label>
+                <select asp-for="IdTipoDocumento" class="form-control" asp-items="ViewBag.IdTipoDocumento"></select>
+                <span asp-validation-for="IdTipoDocumento" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Nombres" class="control-label text-dark"></label>
+                <input asp-for="Nombres" type="text" class="form-control" maxlength="50"
+                       oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" />
+
+                <span asp-validation-for="Nombres" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Apellidos" class="control-label text-dark"></label>
+                <input asp-for="Apellidos" type="text" class="form-control" maxlength="50"
+                       oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" />
+                <span asp-validation-for="Apellidos" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Celular" class="control-label text-dark"></label>
+                <input asp-for="Celular" class="form-control" type="number" maxlength="10"
+                       pattern="\d{10}" title="Debe contener exactamente 10 dígitos" required />
+                <span asp-validation-for="Celular" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Correo" class="control-label text-dark"></label>
+                <input asp-for="Correo" class="form-control" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Contrasena" class="control-label text-dark"></label>
+                <input asp-for="Contrasena" type="" class="form-control" />
+                <span asp-validation-for="Contrasena" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdRol" class="control-label text-dark"></label>
+                <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol"></select>
+            </div>
+
+            <hr />
+
+            <label>Estado</label>
+            <div class="form-check form-switch mb-3">
+                <label asp-for="Estado" class="form-label text-white mb-2"></label>
+                @Html.CheckBoxFor(model => model.Estado, new { @class = "form-check-input", @id = "flexSwitchCheckChecked" })
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <dl class="row">
+            </dl>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-success" /> |
+                <a class="btn btn-secondary" asp-action="Index">Salir</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

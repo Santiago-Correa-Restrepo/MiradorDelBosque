@@ -1,0 +1,100 @@
+﻿@model Ultima.Models.Paquete
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Crear Paquete</h1>
+
+
+<hr />
+<div class="form-container">
+    <div class="row">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="NomPaquete" class="control-label"></label>
+                <input asp-for="NomPaquete" class="form-control" />
+                <span asp-validation-for="NomPaquete" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="oHabitacion.Nombre" class="control-label"></label>
+                <select asp-for="IdHabitacion" class="form-control" asp-items="ViewBag.IdHabitacion"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Seleccione los Servicios</label>
+                @foreach (var servicio in ViewBag.Servicios)
+                {
+                    <div>
+                        <input type="checkbox" name="IdServicios" value="@servicio.IdServicio" class="servicioCheckbox" data-costo="@servicio.Costo" id="servicio_@servicio.IdServicio" />
+                        <label for="servicio_@servicio.IdServicio">@servicio.NomServicio - $@(servicio.Costo != null ? ((decimal)servicio.Costo).ToString("N2") : "0")</label>
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Costo" class="control-label"></label>
+                <input asp-for="Costo" class="form-control" id="precioTotal" />
+                <span asp-validation-for="Costo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <hr>
+            <label>Estado</label>
+            <div class="form-check form-switch mb-3">
+                <label asp-for="Estado" class="form-label text-white mb-2"></label>
+                @Html.CheckBoxFor(model => model.Estado, new { @class = "form-check-input", @id = "flexSwitchCheckChecked" })
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-success" /> |
+                <a asp-action="Index" class="btn btn-secondary">Salir</a>
+            </div>
+           
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<!-- Script para actualizar el precio total -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleccionar los checkboxes de servicios y el campo de precio total
+        const servicioCheckboxes = document.querySelectorAll(".servicioCheckbox");
+        const precioTotalInput = document.getElementById("precioTotal");
+
+        // Función para actualizar el precio total
+        function actualizarPrecioTotal() {
+            let total = 0;
+            servicioCheckboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    total += parseFloat(checkbox.dataset.costo) || 0;
+                }
+            });
+            // Mostrar el total como número entero sin puntos ni ceros adicionales
+            precioTotalInput.value = Math.round(total).toString();
+        }
+
+        // Asignar evento de cambio a cada checkbox
+        servicioCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", actualizarPrecioTotal);
+        });
+
+        // Inicializar el precio total si hay servicios seleccionados al cargar la página
+        actualizarPrecioTotal();
+    });
+</script>
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

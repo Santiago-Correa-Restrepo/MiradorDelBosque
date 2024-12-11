@@ -1,0 +1,348 @@
+﻿@model Ultima.Models.ViewModels.ReservaVM
+
+@{
+    ViewData["Title"] = "Crear";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    @* <link href="~/css/reservacrearstyle.css" rel="stylesheet" /> *@
+    <link href="~/css/CrearStyle.css" rel="stylesheet" />
+
+</head>
+
+<div class="container-create mt-3">
+    
+    <h1 class="text text-center">Crear Reserva</h1>
+
+
+    <div class="form-container">
+
+        <form asp-action="Crear" asp-controller="Reservas" id="reservaForm" method="post">
+
+            <div class="row">
+
+                <input type="hidden" asp-for="oReserva.IdReserva" />
+
+                <div class="box-1 p-4 mt-4">
+                    <div class="row">
+                        <!-- Nombres y Apellidos -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Nombres</label>
+                                <input type="text" id="inputNombre" class="form-control form-control-sm" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Apellidos</label>
+                                <input type="text" id="inputApellido" class="form-control form-control-sm" disabled>
+                            </div>
+                        </div>
+                        <!-- Documento y Tipo de Documento -->
+                        
+                         <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de Documento</label>
+                                <input type="text" id="inputTDocumento" class="form-control form-control-sm" disabled style="width: 150px;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nro. Documento</label>
+                                <input class="form-control form-control-sm" id="inputDocumento" autocomplete="off"
+                                       onkeyup="buscarCliente(this.value)" oninput="formatoNumero(this)"
+                                       asp-for="oReserva.NroDocumentoCliente">
+                                <span id="spanDocumento" asp-validation-for="oReserva.NroDocumentoCliente" class="text-danger"></span>
+                            </div>
+                        </div> 
+                    </div>
+                    <a href="/Clientes/Create?returnUrl=/Reservas/Create" class="btn btn-success">Crear Cliente</a>
+
+                    <hr>
+                    <!-- Correo y Celular -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Correo</label>
+                                <input type="text" id="inputCorreo" class="form-control form-control-sm" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Celular</label>
+                                <input type="text" id="inputCelular" class="form-control form-control-sm" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+
+                <div class="box-3 p-4 mt-4">
+                    <!-- Selección de Paquete -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Paquetes Disponibles</label>
+                                <div class="select-span">
+                                <select id="selectPaquetes" class="form-select form-select-sm">
+                                    <option value="" disabled selected>-- Seleccionar --</option>
+                                    @foreach (var paquetes in ViewBag.PaquetesDisponibles)
+                                    {
+                                        <option value="@paquetes.IdPaquete">@paquetes.NomPaquete</option>
+                                    }
+                                </select>
+                                <span class="text-danger">@Html.ValidationMessage("paqueteSeleccionados")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Nro. Personas</label>
+                                <input type="text" id="nroPersonas" class="form-control form-control-sm" asp-for="oReserva.NroPersonas" readonly>
+                                <span asp-validation-for="oReserva.NroPersonas" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del Paquete -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Costo</label>
+                                <input type="text" id="inputCostoPaquete" class="form-control form-control-sm" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Habitación</label>
+                                <input type="text" id="inputHabitacion" class="form-control form-control-sm" disabled>
+                            </div>
+                        </div>
+                    </div>
+                        <input type="hidden" id="paqueteSeleccionado" name="paqueteSeleccionado" />
+                    <!-- Tabla de Servicios -->
+                    <div class="mt-4">
+                        <label class="form-label">Servicios del Paquete</label>
+                        <table id="tablaServiciosPaquete" class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Costo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Servicios se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="box-4 p-4 mt-4">
+                    <!-- Selección de Servicio -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Servicios Disponibles</label>
+                                <select id="selectServicios" class="form-select form-select-sm">
+                                    <option value="" disabled selected>-- Seleccionar --</option>
+                                    @foreach (var servicio in ViewBag.ServiciosDisponibles)
+                                    {
+                                        <option value="@servicio.IdServicio">@servicio.NomServicio</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Costo</label>
+                                <input type="text" id="inputCostoServicio" class="form-control form-control-sm" disabled>
+                            </div>
+                            <div class="mt-3">
+                                @if (ViewData["ErrorServicio"] as string == "True")
+                                {
+                                    <span class="text-danger">Selecciona al menos un servicio adicional</span>
+                                }
+                                <button id="btnAgregarServicio" type="button" class="btn btn-success btn-sm mt-3">Agregar Servicio</button>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Servicios Seleccionados -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Servicios Seleccionados</label>
+                                <table id="tablaServiciosSeleccionados" class="table table-bordered table-striped">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Costo</th>
+                                            <th>Cantidad</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Servicios seleccionados se cargarán aquí -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <input type="hidden" id="serviciosSeleccionados" name="serviciosSeleccionados" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="box-2 p-4 d-sm-flex mt-4">
+                    <div class="label-info-reserva">
+                        <div class="d-sm-flex mb-2 label-input">
+
+                            <div>
+                                <label class="form-label">Inicio</label>
+                                <input type="date" class="form-control form-control-sm" id="fechaInicio" asp-for="oReserva.FechaInicio">
+                            </div>
+                            <span asp-validation-for="oReserva.FechaInicio" id="fechaInicioSpan" class="text-danger"></span>
+                        </div>
+                        <div class="d-sm-flex mb-2 label-input">
+
+                            <div>
+                                <label class="form-label">Fin</label>
+                                <input type="date" class="form-control form-control-sm" id="fechaFin" asp-for="oReserva.FechaFinalizacion">
+                            </div>
+                            <span asp-validation-for="oReserva.FechaFinalizacion" id="fechaFinSpan" class="text-danger"></span>
+
+                        </div>
+                        <div class="d-sm-flex mb-2 label-input">
+
+                            <div>
+                                <label class="form-label">Sub Total</label>
+                                <input type="text" id="inputSubTotal" class="form-control form-control-sm" asp-for="oReserva.SubTotal" readonly>
+                            </div>
+                            <span asp-validation-for="oReserva.SubTotal" class="text-danger"></span>
+
+                        </div>
+                        <div class="d-sm-flex mb-2 label-input">
+                            <div class="d-sm-flex">
+                                <label class="form-label">Descuento</label>
+                                <input type="text" id="descuento" class="form-control form-control-sm" asp-for="oReserva.Descuento" oninput="formatoDescuento(this)" onkeyup="actualizarInfoCosto()" autocomplete="off" style="min-width:40px">
+                                <span class="input-group-text" id="descuento-addon">%</span>
+                            </div>
+                            <span asp-validation-for="oReserva.Descuento" class="text-danger"></span>
+
+                        </div>
+                        <div class="d-sm-flex mb-2 label-input">
+                            <div>
+                                <label class="form-label">IVA 19%</label>
+                                <input type="text" id="inputIva" class="form-control form-control-sm" asp-for="oReserva.Iva" readonly>
+                            </div>
+                            <span asp-validation-for="oReserva.Iva" class="text-danger"></span>
+
+                        </div>
+
+
+                    </div>
+                    <div class="label-info-reserva p-4 mt-4">
+                        <!-- Fecha Reserva y Total -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha Reserva</label>
+                                <input type="text" id="fechaActual" class="form-control form-control-md" asp-for="oReserva.FechaReserva" readonly>
+                                <span asp-validation-for="oReserva.FechaReserva" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Total</label>
+                                <input type="text" id="inputCostoTotal" class="form-control form-control-md" asp-for="oReserva.MontoTotal" readonly>
+                                <span asp-validation-for="oReserva.MontoTotal" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Método de Pago -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Método de Pago</label>
+                                <select class="form-select form-select-md" asp-for="oReserva.MetodoPago" asp-items="@Model.oListaMetodoPagos">
+                                    <option value="" selected disabled>-- Seleccionar --</option>
+                                </select>
+                                <span asp-validation-for="oReserva.MetodoPago" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Estado Reserva (Hidden) -->
+                        <input type="hidden" value="1" asp-for="oReserva.IdEstadoReserva" />
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </form>
+        <hr>
+        <div class="buttons mt-3">
+            <button class="btn btn-success" onclick="prepararYEnviar()">Crear</button> |
+            <a class="btn btn-dark" asp-action="Index" asp-controller="Reservas">Salir</a>
+        </div>
+
+    </div>
+
+</div>
+
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="~/js/metodosscript.js"></script>
+<script src="~/js/reservascript.js"></script>
+<script src="~/js/fechahoy.js"></script>
+
+<script>
+    var Error = '@ViewData["Error"]';
+    var Documento = '@ViewData["Documento"]';
+
+    if(Error = "true"){
+        $('select[name="oReserva.MetodoPago"]').val('');
+        $('select[name="oReserva.IdEstadoReserva"]').val('');
+        $('#inputSubTotal').val('');
+        $('#nroPersonas').val('');
+        $('#inputIva').val('');
+        $('#inputCostoTotal').val('');
+        $('#descuento').val('');
+        $('#inputDocumento').val('');
+        $('#fechaInicio').val('');
+        $('#fechaFin').val('');
+    }
+
+    
+</script>
+@section Scripts {
+
+<script>
+        $(document).ready(function () {
+            // Función para obtener la fecha actual
+            const fecha = new Date();
+            var formato = 'yyyy-mm-dd'; // Cambiamos al formato 'yyyy-mm-dd' compatible con el campo date
+
+            // Mapa con las partes de la fecha
+            const map = {
+                dd: ('0' + fecha.getDate()).slice(-2),  // Día con 2 dígitos
+                mm: ('0' + (fecha.getMonth() + 1)).slice(-2), // Mes con 2 dígitos (los meses son base 0)
+                yyyy: fecha.getFullYear() // Año con 4 dígitos
+            };
+
+            // Reemplazo del formato con los valores del mapa
+            var fechaHoy = formato.replace(/mm|dd|yyyy/gi, matched => map[matched]);
+
+            // Asignar la fecha actual a los campos del formulario
+            $('#fechaActual').val(fechaHoy);  // Este debería mostrar la fecha en el formato adecuado
+            $('#inputFechaAbono').val(fechaHoy);  // Si este campo también requiere la fecha
+
+
+               // Establecer las fechas mínimas en los campos de inicio y fin
+            $('#fechaInicio').attr('min', fechaHoy);
+            $('#fechaFin').attr('min', fechaHoy);
+
+            // Validación de fecha de fin: que no sea menor que la fecha de inicio
+            $('#fechaInicio').change(function () {
+                var fechaInicio = $(this).val();
+                $('#fechaFin').attr('min', fechaInicio); // La fecha de fin no debe ser anterior a la de inicio
+            });
+        });
+
+</script>
+ 
+    
+}

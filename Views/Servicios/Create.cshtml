@@ -1,0 +1,55 @@
+﻿@model Ultima.Models.Servicio
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Crear Servicio</h1>
+
+
+<hr />
+<div class="form-container">
+    <div class="row">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdTipoServicio" class="control-label"></label>
+                <select asp-for="IdTipoServicio" class ="form-control" asp-items="ViewBag.IdTipoServicio"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="NomServicio" class="control-label"></label>
+                <input asp-for="NomServicio" class="form-control" />
+                <span asp-validation-for="NomServicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Costo" class="control-label"></label>
+                <input asp-for="Costo" class="form-control" />
+                <span asp-validation-for="Costo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <hr>
+            <label>Estado</label>
+            <div class="form-check form-switch mb-3">
+                <label asp-for="Estado" class="form-label text-white mb-2"></label>
+                @Html.CheckBoxFor(model => model.Estado, new { @class = "form-check-input", @id = "flexSwitchCheckChecked" })
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-success" /> |
+                <a asp-action="Index" class="btn btn-secondary">Salir</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

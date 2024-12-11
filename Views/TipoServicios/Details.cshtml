@@ -1,0 +1,33 @@
+﻿@model Ultima.Models.TipoServicio
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Detalles Tipo Servicio</h1>
+
+
+
+<div>
+    <hr />
+    <dl class="form-container">
+        <div class="text-center">
+            <div class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NombreTipoServicio)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.NombreTipoServicio)
+                </dd>
+            </div>
+            <hr>
+        </div>
+        <div class="">
+            <a asp-action="Index" class="btn btn-secondary">Salir</a>
+        </div>
+    </dl>
+</div>
+
+
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

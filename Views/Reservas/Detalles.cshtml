@@ -1,0 +1,244 @@
+﻿@model Ultima.Models.ViewModels.ReservaVM
+
+@{
+    ViewData["Title"] = "Detalles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+   @*  <link href="~/css/reservacrearstyle.css" rel="stylesheet" /> *@
+   <link href="~/css/CrearStyle.css" rel="stylesheet" />
+</head>
+
+<div class="container-create mt-3">
+
+    <h1 class="text text-center">Detalles Reserva</h1>
+
+    <div class="form-container">
+
+        <form asp-action="Crear" asp-controller="Reservas" id="reservaForm">
+
+            <div class="row">
+
+                <input type="hidden" asp-for="oReserva.IdReserva" />
+
+                <div class="box-1 p-4 mt-4 d-flex flex-wrap" style="gap: 20px;">
+                    <!-- Información del Cliente -->
+                    <div class="nom-ape-dir" style="flex: 1;">
+                        <!-- Nombres -->
+                        <div class="mb-3">
+                            <label for="inputNombre" class="form-label">Nombres</label>
+                            <input type="text" id="inputNombre" class="form-control form-control-sm"
+                                   onkeyup="buscarCliente(this.value)"
+                                   asp-for="oCliente.Nombres"
+                                   disabled>
+                        </div>
+                        <!-- Apellidos -->
+                        <div class="mb-3">
+                            <label for="inputApellido" class="form-label">Apellidos</label>
+                            <input type="text" id="inputApellido" class="form-control form-control-sm"
+                                   onkeyup="buscarCliente(this.value)"
+                                   disabled>
+                        </div>
+                    </div>
+
+                    <!-- Documentos, Correo y Teléfono -->
+                    <div class="doc-cor-tel" style="flex: 1;">
+                        <!-- Documento -->
+                        <div class="mb-3">
+                            <label for="inputTDocumento" class="form-label">Tipo Documento</label>
+                            <input type="text" id="inputTDocumento" class="form-control form-control-sm" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputDocumento" class="form-label">Nro. Documento</label>
+                            <input type="text" id="inputDocumento" class="form-control form-control-sm"
+                                   autocomplete="off"
+                                   onkeyup="buscarCliente(this.value)"
+                                   asp-for="oReserva.NroDocumentoCliente"
+                                   disabled>
+                        </div>
+
+                        <!-- Correo y Celular -->
+                        <div class="d-flex flex-column">
+                            <div class="mb-3">
+                                <label for="inputCorreo" class="form-label">Correo</label>
+                                <input type="text" id="inputCorreo" class="form-control form-control-sm" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="inputCelular" class="form-label">Celular</label>
+                                <input type="text" id="inputCelular" class="form-control form-control-sm" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="box-2 p-4 mt-4 d-flex flex-wrap" style="gap: 20px;">
+                    <!-- Primera Columna -->
+                    <div class="label-info-reserva" style="flex: 1; min-width: 300px;">
+                        <!-- Fecha de Inicio -->
+                        <div class="mb-3">
+                            <label for="fechaInicio" class="form-label">Inicio</label>
+                            <input type="date" class="form-control form-control-sm" id="fechaInicio" asp-for="oReserva.FechaInicio" readonly>
+                        </div>
+                        <!-- Fecha de Fin -->
+                        <div class="mb-3">
+                            <label for="fechaFin" class="form-label">Fin</label>
+                            <input type="date" class="form-control form-control-sm" id="fechaFin" asp-for="oReserva.FechaFinalizacion" readonly>
+                        </div>
+                        <!-- Subtotal -->
+                        <div class="mb-3">
+                            <label for="inputSubTotal" class="form-label">Sub Total</label>
+                            <input type="text" id="inputSubTotal" class="form-control form-control-sm" asp-for="oReserva.SubTotal" readonly>
+                        </div>
+                        <!-- Descuento -->
+                        <div class="mb-3 d-flex align-items-center">
+                            <label for="descuento" class="form-label me-2">Descuento</label>
+                            <div class="input-group">
+                                <input type="text" id="descuento" class="form-control form-control-sm" asp-for="oReserva.Descuento" readonly>
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <!-- IVA -->
+                        <div class="mb-3">
+                            <label for="inputIva" class="form-label">IVA 19%</label>
+                            <input type="text" id="inputIva" class="form-control form-control-sm" asp-for="oReserva.Iva" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Segunda Columna -->
+                    <div class="label-info-reserva" style="flex: 1; min-width: 300px;">
+                        <!-- Fecha de Reserva -->
+                        <div class="mb-3">
+                            <label for="fechaActual" class="form-label">Fecha Reserva</label>
+                            <input type="text" id="fechaActual" class="form-control form-control-sm" asp-for="oReserva.FechaReserva" readonly>
+                        </div>
+                        <!-- Número de Personas -->
+                        <div class="mb-3">
+                            <label for="nroPersonas" class="form-label">Nro. Personas</label>
+                            <input type="text" id="nroPersonas" class="form-control form-control-sm" asp-for="oReserva.NroPersonas" readonly>
+                        </div>
+                        <!-- Total -->
+                        <div class="mb-3">
+                            <label for="inputCostoTotal" class="form-label">Total</label>
+                            <input type="text" id="inputCostoTotal" class="form-control form-control-sm" asp-for="oReserva.MontoTotal" readonly>
+                        </div>
+                        <!-- Método de Pago -->
+                        <div class="mb-3">
+                            <label for="metodoPago" class="form-label">Método Pago</label>
+                            <select id="metodoPago" class="form-select form-select-sm" asp-for="oReserva.MetodoPago" asp-items="@Model.oListaMetodoPagos" disabled>
+                            </select>
+                        </div>
+                        <!-- Estado -->
+                        <div>
+                            <label for="estadoReserva" class="form-label">Estado</label>
+                            <select id="estadoReserva" class="form-select form-select-sm" asp-for="oReserva.IdEstadoReserva" asp-items="@Model.oListaEstados" disabled>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-3 p-4 mt-4 d-flex flex-wrap" style="gap: 20px;">
+                    <!-- Información del Paquete -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <!-- Selección del Paquete -->
+                        <div class="select-paquete mb-4">
+                            <label for="selectPaquetes" class="form-label">Paquete Seleccionado</label>
+                            <div class="select-span">
+                                <select id="selectPaquetes" class="form-select form-select-sm selectPaquete" disabled>
+                                    <option value="@ViewBag.PaqueteAsociado.IdPaquete" selected>
+                                        @ViewBag.PaqueteAsociado.NomPaquete
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Costo del Paquete -->
+                        <div class="mb-3">
+                            <label for="inputCostoPaquete" class="form-label">Costo</label>
+                            <input type="text" id="inputCostoPaquete" class="form-control form-control-sm" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Servicios Seleccionados -->
+                    <div style="flex: 2; min-width: 400px;">
+                        <label for="tablaServiciosPaquete" class="form-label">Servicios Seleccionados</label>
+                        <table id="tablaServiciosPaquete" class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Cantidad</th>
+                                    <th>Costo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < ViewBag.ServiciosAsociados.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@ViewBag.ServiciosAsociados[i].oServicio.NomServicio</td>
+                                        <td>
+                                            <input type="text"
+                                                   class="form-control form-control-sm text-center"
+                                                   style="max-width: 80px;"
+                                                   value="@ViewBag.CantidadesServiciosAsociados[i]"
+                                                   onchange="cambiarCantidad(this)"
+                                                   oninput="formatoNumero(this)"
+                                                   disabled>
+                                        </td>
+                                        <td>@string.Format("{0:C0}", ViewBag.ServiciosAsociados[i].Costo)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </form>
+        <hr>
+        <div class="buttons d-flex" style="gap: 10px">
+            <a style="padding-top: 7px" class="btn btn-dark" asp-action="Index" asp-controller="Reservas">Salir</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="~/js/metodosscript.js"></script>
+<script src="~/js/reservascript.js"></script>
+
+<script>
+
+    var documentoCliente = $('#inputDocumento').val();
+    buscarCliente(documentoCliente);
+     var nombre = $('#inputNombre').val();
+    
+
+    var subTotal = parseFloat($('#inputSubTotal').val());
+    var iva = parseFloat($('#inputIva').val());
+    var total = parseFloat($('#inputCostoTotal').val());
+
+    $('#inputSubTotal').val(formatoCostoInput(subTotal));
+    $('#inputIva').val(formatoCostoInput(iva));
+    $('#inputCostoTotal').val(formatoCostoInput(total));
+
+    var idPaqueteSelected = $('#selectPaquetes').val();
+
+    $.ajax({
+        url: '/Reservas/ObtenerInfoBasicaPaquete',
+        type: 'GET',
+        data: { reservaId: @Model.oReserva.IdReserva },
+        dataType: 'json',
+        success: function (data) {
+            $('#inputCostoPaquete').val(formatoCostoInput(data.costo));
+        },
+        error: function () {
+            console.error('Error al obtener la informacion del paquete.');
+        }
+    });
+
+
+</script>

@@ -1,0 +1,14 @@
+﻿body {
+}
+
+ Table header styling 
+.table-header {
+    background-color: #004d00;  Dark green 
+    color: white;
+}
+
+ Table rows styling 
+#table-row {
+    background-color: #f8f4e3;  Light cream/beige 
+}
+

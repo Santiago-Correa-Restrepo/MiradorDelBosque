@@ -1,0 +1,81 @@
+﻿/* Estilos generales para la tabla */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #cfcccc;
+}
+
+    /* Estilo para los encabezados */
+    .custom-table thead .table-header {
+        background-color: #2E4B47;
+        color: #fff;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #23322D;
+    }
+
+    .custom-table thead th {
+        padding: 10px;
+    }
+
+    /* Estilo para las filas */
+    .custom-table tbody .table-row {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+        background-color: #FDD8A7;
+    }
+
+    .custom-table tbody tr:nth-child(odd) {
+        background-color: #fff;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #96806C;
+        color: #fff;
+    }
+
+    .custom-table td {
+        padding: 10px;
+        text-align: left;
+    }
+
+/* Botones */
+.btn {
+    font-size: 12px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-warning {
+    background-color: #f0ad4e;
+    color: white;
+}
+
+.btn-info {
+    background-color: #5bc0de;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* Formulario de cambio de estado */
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Mensaje de estado */
+#estado-texto {
+    font-size: 14px;
+    font-weight: bold;
+}

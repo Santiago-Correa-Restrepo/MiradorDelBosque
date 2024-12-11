@@ -1,0 +1,86 @@
+﻿@model Ultima.Models.Habitacione
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text text-center">Detalles Habitación</h1>
+
+<div>
+    <hr />
+    <dl class="form-container">
+        <div class="text text-center">
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Nombre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Nombre)
+            </dd>
+        </div>
+        <hr>
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Descripcion)
+            </dd>
+        </div>
+        <hr>
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Cantidad)
+            </dd>
+        </div>
+        <hr>
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FechaRegistro)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FechaRegistro)
+            </dd>
+        </div>
+        <hr>
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Costo)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Costo)
+            </dd>
+        </div>
+        <hr>
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Estado)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Estado)
+            </dd>
+        </div>
+        <hr>
+        <div class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.oTipoHabitacion.NomTipoHabitacion)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.oTipoHabitacion.NomTipoHabitacion)
+            </dd>
+        </div>
+        </div>
+        <hr>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">Salir</a>
+        </div>
+    </dl>
+</div>
+
+
+
+<link href="~/css/CrearStyle.css" rel="stylesheet" />

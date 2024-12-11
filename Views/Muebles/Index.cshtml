@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Ultima.Models.Mueble>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Muebles</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="productosTable" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imagen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaRegistro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImagenDataURL))
+                    {
+                        <img src="@item.ImagenDataURL" alt="Imagen de Habitación" style="width:100px;height:auto;" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaRegistro)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdMueble" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdMueble">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdMueble">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdMueble">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#productosTable').DataTable();  // Inicializar DataTables
+        });
+    </script>
+
+}
