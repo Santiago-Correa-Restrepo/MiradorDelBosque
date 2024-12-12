@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 public class EmailSender
 {
-    private readonly string fromEmail = "Ortizgero354@gmail.com"; //remplaza por tu correo
-    private readonly string fromPassword = "wksr amkr dcgb bgzu "; // Reemplaza con la contraseña de aplicación generada para Gmail
+    private readonly string fromEmail = "miradordelbosqueglamping@gmail.com"; //remplaza por tu correo
+    private readonly string fromPassword = "schf lpcy nyxz pguw "; // Reemplaza con la contraseña de aplicación generada para Gmail
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
